@@ -47,7 +47,7 @@ application is executed.
          4. Type of response body this request would receive like String.class
    5. The exchange() api returns a ResponseEntity which is same like HttpEntity but also has StatusCode attached to it.
    The server endpoint should return a ResponseEntity in this case to match up. The type of ResponseEntity here would be
-   the same type as passed into exchange api, which is String in this case.  
+   the expected return type to exchange api from the endpoint server, which is String in this case.  
       
     Example: 
     >restTemplate.exchange(String url, HttpMethod method, HttpEntity<T> requestEntity, Class<T> responseType)  
