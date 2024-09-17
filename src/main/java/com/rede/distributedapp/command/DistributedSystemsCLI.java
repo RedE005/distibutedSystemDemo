@@ -2,7 +2,11 @@ package com.rede.distributedapp.command;
 
 import com.rede.distributedapp.entity.Message;
 
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.util.StringUtils;
@@ -34,7 +38,6 @@ import static com.rede.distributedapp.constant.Constants.baseUrl;
         }
 )
 public class DistributedSystemsCLI implements Runnable {
-    private static final AtomicLong counter = new AtomicLong(0);
 
     private static final RestTemplate restTemplate = new RestTemplate();
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -87,7 +90,7 @@ public class DistributedSystemsCLI implements Runnable {
             httpHeaders.setContentType(MediaType.APPLICATION_JSON);
             httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-            Message messageObject = new Message(message, counter.incrementAndGet());
+            Message messageObject = new Message(message);
 
             HttpEntity<Message> requestEntity = new HttpEntity<>(
                     messageObject,
@@ -101,6 +104,8 @@ public class DistributedSystemsCLI implements Runnable {
                     requestEntity,
                     String.class
             );
+
+            System.out.println("The post is successful with body: " + response.getBody());
 
         }
     }
