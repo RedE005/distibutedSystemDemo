@@ -22,7 +22,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Collections;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static com.rede.distributedapp.constant.Constants.baseUrl;
 
@@ -34,7 +33,8 @@ import static com.rede.distributedapp.constant.Constants.baseUrl;
                 DistributedSystemsCLI.Greet.class,
                 DistributedSystemsCLI.Rant.class,
                 DistributedSystemsCLI.Post.class,
-                DistributedSystemsCLI.Get.class
+                DistributedSystemsCLI.Get.class,
+                DistributedSystemsCLI.Delete.class
         }
 )
 public class DistributedSystemsCLI implements Runnable {
@@ -147,6 +147,33 @@ public class DistributedSystemsCLI implements Runnable {
 //                throw new RuntimeException(String.format("Error reading contents from response: %s", e.getMessage()),
 //                        e);
 //            }
+        }
+    }
+
+    @Command(name = "delete", description = "Deletes a message with a particular messageId")
+    static class Delete implements Runnable {
+        @Parameters(description = "Id of message to be deleted", arity = "1")
+        public String id;
+
+        @Override
+        public void run() {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+            httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+            HttpEntity<String> deleteEntity = new HttpEntity<>(httpHeaders);
+            String path = "delete";
+            if(StringUtils.hasText(id)) {
+                ResponseEntity<String> response = restTemplate.exchange(
+                        String.format("%s/%s/%s",baseUrl, path, id),
+                        HttpMethod.DELETE,
+                        deleteEntity,
+                        String.class
+                );
+                System.out.println("The body of the response is: " + response.getBody());
+            } else {
+                System.out.println("Enter a valid non empty Id");
+            }
         }
     }
 
